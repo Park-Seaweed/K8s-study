@@ -111,7 +111,11 @@ kubectl get secrets -o json | kubectl replace -f -
 암호화 적용 여부를 확인하려면 **etcd에 저장된 데이터**를 직접 조회해야 합니다.
 
 ```sh
-ETCDCTL_API=3 etcdctl get /registry/secrets/default/my-secret --hex --endpoints=<etcd-endpoint> --cacert=<ca-cert-path> --cert=<cert-path> --key=<key-path>
+ETCDCTL_API=3 etcdctl \
+   --cacert=/etc/kubernetes/pki/etcd/ca.crt   \
+   --cert=/etc/kubernetes/pki/etcd/server.crt \
+   --key=/etc/kubernetes/pki/etcd/server.key  \
+   get /registry/secrets/default/secret1 | hexdump -C
 ```
 📌 **설명**:
 - 암호화 적용 전 → **평문**(Base64로 인코딩된 Secret 값이 직접 노출됨)
