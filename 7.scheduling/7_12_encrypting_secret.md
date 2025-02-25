@@ -19,7 +19,7 @@ Kubernetes에서는 **Secret 데이터를 저장 시 암호화(Encryption at Res
 
 ## 2. 암호화 활성화 (AES-CBC 사용)
 
-### **✅ 1️⃣ 암호화 설정 파일 생성**
+### **암호화 설정 파일 생성**
 Kubernetes API 서버가 사용할 **EncryptionConfiguration** 파일을 생성합니다.
 
 ```yaml
@@ -35,13 +35,13 @@ resources:
               secret: c2VjcmV0LWtleS1leGFtcGxlMTIzNDU2Nzg5Cg==  # Base64 인코딩된 키
       - identity: {}
 ```
-📌 **설명**:
+**설명**:
 - `secrets` 리소스를 암호화 대상으로 지정
 - `aescbc`를 사용하여 Secret을 암호화
 - `secret` 필드는 **Base64 인코딩된 AES 키**
 - `identity`는 **기본적으로 적용되는 평문 저장 방식** (백업용)
 
-### **✅ 2️⃣ API 서버에 암호화 설정 적용 (파일 마운트 포함)**
+### **API 서버에 암호화 설정 적용 (파일 마운트 포함)**
 
 **EncryptionConfiguration 파일을 `/etc/kubernetes/` 디렉터리에 저장**
 ```sh
@@ -79,15 +79,15 @@ spec:
       - "kube-apiserver"
       - "--encryption-provider-config=/etc/kubernetes/encryption-config.yaml"
 ```
-📌 **설명**:
+**설명**:
 - `/etc/kubernetes/encryption-config.yaml`을 **Volume으로 마운트**
 - `--encryption-provider-config` 플래그를 사용해 **암호화 설정 파일을 적용**
 
-### **✅ 3️⃣ Kubernetes API 서버 재시작**
+### **Kubernetes API 서버 재시작**
 ```sh
 kubectl delete pod -n kube-system -l component=kube-apiserver
 ```
-📌 **설명**:
+**설명**:
 - API 서버를 재시작하여 새로운 암호화 설정 적용
 
 ---
@@ -96,18 +96,18 @@ kubectl delete pod -n kube-system -l component=kube-apiserver
 
 API 서버 설정을 변경한 후 기존 Secret 데이터를 암호화하려면 **Secret을 다시 저장**해야 합니다.
 
-### **✅ 기존 Secret을 다시 저장하여 암호화 적용**
+### **기존 Secret을 다시 저장하여 암호화 적용**
 ```sh
 kubectl get secrets -o json | kubectl replace -f -
 ```
-📌 **설명**:
+**설명**:
 - 기존 Secret을 가져와서 다시 저장하면 새로운 암호화 설정이 적용됨
 
 ---
 
 ## 4. Secret 암호화 여부 확인
 
-### **✅ etcd에서 Secret 데이터 확인**
+### **etcd에서 Secret 데이터 확인**
 암호화 적용 여부를 확인하려면 **etcd에 저장된 데이터**를 직접 조회해야 합니다.
 
 ```sh
@@ -117,7 +117,7 @@ ETCDCTL_API=3 etcdctl \
    --key=/etc/kubernetes/pki/etcd/server.key  \
    get /registry/secrets/default/secret1 | hexdump -C
 ```
-📌 **설명**:
+**설명**:
 - 암호화 적용 전 → **평문**(Base64로 인코딩된 Secret 값이 직접 노출됨)
 - 암호화 적용 후 → **암호화된 값이 저장됨** (해독 불가능한 형식)
 
@@ -126,7 +126,7 @@ ETCDCTL_API=3 etcdctl \
 ## 5. Key Rotation (키 교체) 방법
 보안 강화를 위해 **주기적으로 암호화 키를 교체**하는 것이 좋습니다.
 
-### **✅ 1️⃣ 새로운 암호화 키 추가**
+### **새로운 암호화 키 추가**
 ```yaml
 apiVersion: apiserver.config.k8s.io/v1
 kind: EncryptionConfiguration
@@ -142,17 +142,17 @@ resources:
               secret: c2VjcmV0LWtleS1leGFtcGxlMTIzNDU2Nzg5Cg==  # 기존 키
       - identity: {}
 ```
-📌 **설명**:
+**설명**:
 - `key2`를 추가하고 `key1`을 유지 (새로운 키가 최우선 사용됨)
 
-### **✅ 2️⃣ 기존 Secret 재저장하여 새 키로 암호화 적용**
+### **기존 Secret 재저장하여 새 키로 암호화 적용**
 ```sh
 kubectl get secrets -o json | kubectl replace -f -
 ```
-📌 **설명**:
+**설명**:
 - Secret을 다시 저장하여 **새로운 키로 암호화**
 
-### **✅ 3️⃣ 이전 키 제거**
+### **이전 키 제거**
 모든 Secret을 새 키로 암호화한 후 `key1`을 제거합니다.
 
 ```yaml
@@ -168,7 +168,7 @@ resources:
               secret: Zm9vYmFyYmF6MTIzNDU2Cg==  # 새로운 키만 유지
       - identity: {}
 ```
-📌 **설명**:
+**설명**:
 - `key1`을 제거하여 **불필요한 이전 키 삭제**
 
 ---

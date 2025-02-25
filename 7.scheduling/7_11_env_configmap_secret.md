@@ -8,7 +8,7 @@ Kubernetes에서 환경변수를 설정하는 방법은 여러 가지가 있으�
 
 Pod의 컨테이너에서 환경변수를 직접 정의할 수 있습니다.
 
-### **✅ 예제: `env`를 사용한 환경변수 설정**
+### **예제: `env`를 사용한 환경변수 설정**
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -24,7 +24,7 @@ spec:
       - name: DB_HOST
         value: "db.example.com"
 ```
-📌 **설명**:
+**설명**:
 - `APP_ENV=production` 설정
 - `DB_HOST=db.example.com` 설정
 
@@ -32,14 +32,14 @@ spec:
 
 ## 2. ConfigMap을 이용한 환경변수 설정
 
-### **✅ CLI로 ConfigMap 생성**
+### **CLI로 ConfigMap 생성**
 ```sh
 kubectl create configmap my-config --from-literal=APP_ENV=production --from-literal=DB_HOST=db.example.com
 ```
-📌 **설명**:
+**설명**:
 - `APP_ENV=production`, `DB_HOST=db.example.com`을 포함하는 ConfigMap 생성
 
-### **✅ ConfigMap YAML 생성**
+### **ConfigMap YAML 생성**
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -50,9 +50,9 @@ data:
   APP_ENV: "production"
   DB_HOST: "db.example.com"
 ```
-📌 **설명**: `APP_ENV`와 `DB_HOST` 값을 저장하는 ConfigMap 생성
+**설명**: `APP_ENV`와 `DB_HOST` 값을 저장하는 ConfigMap 생성
 
-### **✅ ConfigMap을 환경변수로 사용 (`envFrom`)**
+### **ConfigMap을 환경변수로 사용 (`envFrom`)**
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -66,10 +66,10 @@ spec:
       - configMapRef:
           name: my-config
 ```
-📌 **설명**:
+**설명**:
 - `my-config`의 모든 값을 환경변수로 적용
 
-### **✅ ConfigMap에서 특정 키만 환경변수로 사용 (`env`)**
+### **ConfigMap에서 특정 키만 환경변수로 사용 (`env`)**
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -86,7 +86,7 @@ spec:
             name: my-config
             key: APP_ENV
 ```
-📌 **설명**:
+**설명**:
 - `APP_ENV`만 `my-config`에서 가져와 환경변수로 설정
 
 ---
@@ -95,14 +95,14 @@ spec:
 
 Secret은 **민감한 데이터 (예: 비밀번호, API 키)** 저장에 사용됩니다.
 
-### **✅ CLI로 Secret 생성**
+### **CLI로 Secret 생성**
 ```sh
 kubectl create secret generic my-secret --from-literal=DB_PASSWORD=password
 ```
-📌 **설명**:
+**설명**:
 - `DB_PASSWORD=password`를 포함하는 Secret 생성
 
-### **✅ Secret YAML 생성**
+### **Secret YAML 생성**
 ```yaml
 apiVersion: v1
 kind: Secret
@@ -113,10 +113,10 @@ type: Opaque
 data:
   DB_PASSWORD: "cGFzc3dvcmQ="  # base64로 인코딩된 값 (password)
 ```
-📌 **설명**:
+**설명**:
 - `DB_PASSWORD=password`를 **base64**로 인코딩하여 저장
 
-### **✅ Secret을 환경변수로 사용 (`envFrom`)**
+### **Secret을 환경변수로 사용 (`envFrom`)**
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -130,10 +130,10 @@ spec:
       - secretRef:
           name: my-secret
 ```
-📌 **설명**:
+**설명**:
 - `my-secret`의 모든 키를 환경변수로 사용
 
-### **✅ Secret에서 특정 키만 환경변수로 사용 (`env`)**
+### **Secret에서 특정 키만 환경변수로 사용 (`env`)**
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -150,13 +150,13 @@ spec:
             name: my-secret
             key: DB_PASSWORD
 ```
-📌 **설명**:
+**설명**:
 - `DB_PASSWORD`만 `my-secret`에서 가져와 환경변수로 설정
 
-### **✅ Base64 인코딩 및 디코딩 방법**
+### **Base64 인코딩 및 디코딩 방법**
 Secret의 `data` 필드는 **base64 인코딩된 값**을 저장합니다.
 
-#### **📌 인코딩 (문자열 → base64)**
+#### **인코딩 (문자열 → base64)**
 ```sh
 echo -n 'password' | base64
 ```
@@ -165,7 +165,7 @@ echo -n 'password' | base64
 cGFzc3dvcmQ=
 ```
 
-#### **📌 디코딩 (base64 → 원래 값)**
+#### **디코딩 (base64 → 원래 값)**
 ```sh
 echo 'cGFzc3dvcmQ=' | base64 --decode
 ```

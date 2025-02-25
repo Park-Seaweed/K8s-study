@@ -31,7 +31,7 @@ Admission Controller는 **두 단계로 동작**합니다.
 
 Kubernetes API 서버에서 실행 중인 Admission Controller 목록을 확인하려면:
 
-### **1️⃣ `kube-apiserver` 실행 플래그 확인**
+### **`kube-apiserver` 실행 플래그 확인**
 ```sh
 ps aux | grep kube-apiserver | grep enable-admission-plugins
 ```
@@ -40,7 +40,7 @@ ps aux | grep kube-apiserver | grep enable-admission-plugins
 --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook
 ```
 
-### **2️⃣ 설정 파일에서 확인** (`kube-apiserver.yaml`)
+### **설정 파일에서 확인** (`kube-apiserver.yaml`)
 ```sh
 cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep enable-admission-plugins
 ```
@@ -65,7 +65,7 @@ cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep enable-admission-plugin
 
 Admission Webhook을 사용하면 외부 검증 로직을 Kubernetes와 연동할 수 있습니다.
 
-### **✅ Webhook을 사용하는 Validating Admission Controller 예제**
+### **Webhook을 사용하는 Validating Admission Controller 예제**
 ```yaml
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -92,18 +92,18 @@ webhooks:
 
 ## 6. Admission Controller 활성화 및 비활성화
 
-### **1️⃣ 특정 Admission Controller 활성화**
+### **특정 Admission Controller 활성화**
 API 서버 실행 옵션에 추가:
 ```sh
 --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,ResourceQuota
 ```
 
-### **2️⃣ 특정 Admission Controller 비활성화**
+### **특정 Admission Controller 비활성화**
 ```sh
 --disable-admission-plugins=PodSecurity,LimitRanger
 ```
 
-### **3️⃣ 현재 적용된 설정 확인**
+### **현재 적용된 설정 확인**
 ```sh
 kubectl api-versions
 ```
@@ -112,15 +112,15 @@ kubectl api-versions
 
 ## 7. Admission Control을 활용한 보안 및 정책 적용
 
-### ✅ **보안 강화**
+### **보안 강화**
 - `PodSecurity`: Pod에 대한 보안 정책 적용
 - `NodeRestriction`: 노드의 불필요한 API 요청 제한
 
-### ✅ **리소스 관리**
+### **리소스 관리**
 - `LimitRanger`: 네임스페이스 별 리소스 제한 설정
 - `ResourceQuota`: 전체 네임스페이스의 리소스 사용량 제한
 
-### ✅ **맞춤형 검증 및 변환**
+### **맞춤형 검증 및 변환**
 - `MutatingAdmissionWebhook`: Pod 생성 시 자동 레이블 추가
 - `ValidatingAdmissionWebhook`: 특정 컨테이너 이미지를 제한하는 정책 적용
 
